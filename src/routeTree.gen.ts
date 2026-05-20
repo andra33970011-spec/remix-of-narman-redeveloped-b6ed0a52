@@ -9,50 +9,180 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
-import { Route as IndexRouteImport } from './routes/index'
+import { Route as AdminDesaRouteImport } from './routes/admin.desa'
+import { Route as AdminConfigRouteImport } from './routes/admin.config'
+import { Route as AdminCmsRouteImport } from './routes/admin.cms'
+import { Route as AdminBrandingRouteImport } from './routes/admin.branding'
+import { Route as AdminBackupRouteImport } from './routes/admin.backup'
+import { Route as AdminAuditRouteImport } from './routes/admin.audit'
+import { Route as AdminAsnRouteImport } from './routes/admin.asn'
 
-const IndexRoute = IndexRouteImport.update({
-  id: '/',
-  path: '/',
+const AdminDesaRoute = AdminDesaRouteImport.update({
+  id: '/admin/desa',
+  path: '/admin/desa',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AdminConfigRoute = AdminConfigRouteImport.update({
+  id: '/admin/config',
+  path: '/admin/config',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AdminCmsRoute = AdminCmsRouteImport.update({
+  id: '/admin/cms',
+  path: '/admin/cms',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AdminBrandingRoute = AdminBrandingRouteImport.update({
+  id: '/admin/branding',
+  path: '/admin/branding',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AdminBackupRoute = AdminBackupRouteImport.update({
+  id: '/admin/backup',
+  path: '/admin/backup',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AdminAuditRoute = AdminAuditRouteImport.update({
+  id: '/admin/audit',
+  path: '/admin/audit',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AdminAsnRoute = AdminAsnRouteImport.update({
+  id: '/admin/asn',
+  path: '/admin/asn',
   getParentRoute: () => rootRouteImport,
 } as any)
 
 export interface FileRoutesByFullPath {
-  '/': typeof IndexRoute
+  '/admin/asn': typeof AdminAsnRoute
+  '/admin/audit': typeof AdminAuditRoute
+  '/admin/backup': typeof AdminBackupRoute
+  '/admin/branding': typeof AdminBrandingRoute
+  '/admin/cms': typeof AdminCmsRoute
+  '/admin/config': typeof AdminConfigRoute
+  '/admin/desa': typeof AdminDesaRoute
 }
 export interface FileRoutesByTo {
-  '/': typeof IndexRoute
+  '/admin/asn': typeof AdminAsnRoute
+  '/admin/audit': typeof AdminAuditRoute
+  '/admin/backup': typeof AdminBackupRoute
+  '/admin/branding': typeof AdminBrandingRoute
+  '/admin/cms': typeof AdminCmsRoute
+  '/admin/config': typeof AdminConfigRoute
+  '/admin/desa': typeof AdminDesaRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
-  '/': typeof IndexRoute
+  '/admin/asn': typeof AdminAsnRoute
+  '/admin/audit': typeof AdminAuditRoute
+  '/admin/backup': typeof AdminBackupRoute
+  '/admin/branding': typeof AdminBrandingRoute
+  '/admin/cms': typeof AdminCmsRoute
+  '/admin/config': typeof AdminConfigRoute
+  '/admin/desa': typeof AdminDesaRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/'
+  fullPaths:
+    | '/admin/asn'
+    | '/admin/audit'
+    | '/admin/backup'
+    | '/admin/branding'
+    | '/admin/cms'
+    | '/admin/config'
+    | '/admin/desa'
   fileRoutesByTo: FileRoutesByTo
-  to: '/'
-  id: '__root__' | '/'
+  to:
+    | '/admin/asn'
+    | '/admin/audit'
+    | '/admin/backup'
+    | '/admin/branding'
+    | '/admin/cms'
+    | '/admin/config'
+    | '/admin/desa'
+  id:
+    | '__root__'
+    | '/admin/asn'
+    | '/admin/audit'
+    | '/admin/backup'
+    | '/admin/branding'
+    | '/admin/cms'
+    | '/admin/config'
+    | '/admin/desa'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
-  IndexRoute: typeof IndexRoute
+  AdminAsnRoute: typeof AdminAsnRoute
+  AdminAuditRoute: typeof AdminAuditRoute
+  AdminBackupRoute: typeof AdminBackupRoute
+  AdminBrandingRoute: typeof AdminBrandingRoute
+  AdminCmsRoute: typeof AdminCmsRoute
+  AdminConfigRoute: typeof AdminConfigRoute
+  AdminDesaRoute: typeof AdminDesaRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
-    '/': {
-      id: '/'
-      path: '/'
-      fullPath: '/'
-      preLoaderRoute: typeof IndexRouteImport
+    '/admin/desa': {
+      id: '/admin/desa'
+      path: '/admin/desa'
+      fullPath: '/admin/desa'
+      preLoaderRoute: typeof AdminDesaRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/admin/config': {
+      id: '/admin/config'
+      path: '/admin/config'
+      fullPath: '/admin/config'
+      preLoaderRoute: typeof AdminConfigRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/admin/cms': {
+      id: '/admin/cms'
+      path: '/admin/cms'
+      fullPath: '/admin/cms'
+      preLoaderRoute: typeof AdminCmsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/admin/branding': {
+      id: '/admin/branding'
+      path: '/admin/branding'
+      fullPath: '/admin/branding'
+      preLoaderRoute: typeof AdminBrandingRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/admin/backup': {
+      id: '/admin/backup'
+      path: '/admin/backup'
+      fullPath: '/admin/backup'
+      preLoaderRoute: typeof AdminBackupRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/admin/audit': {
+      id: '/admin/audit'
+      path: '/admin/audit'
+      fullPath: '/admin/audit'
+      preLoaderRoute: typeof AdminAuditRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/admin/asn': {
+      id: '/admin/asn'
+      path: '/admin/asn'
+      fullPath: '/admin/asn'
+      preLoaderRoute: typeof AdminAsnRouteImport
       parentRoute: typeof rootRouteImport
     }
   }
 }
 
 const rootRouteChildren: RootRouteChildren = {
-  IndexRoute: IndexRoute,
+  AdminAsnRoute: AdminAsnRoute,
+  AdminAuditRoute: AdminAuditRoute,
+  AdminBackupRoute: AdminBackupRoute,
+  AdminBrandingRoute: AdminBrandingRoute,
+  AdminCmsRoute: AdminCmsRoute,
+  AdminConfigRoute: AdminConfigRoute,
+  AdminDesaRoute: AdminDesaRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
