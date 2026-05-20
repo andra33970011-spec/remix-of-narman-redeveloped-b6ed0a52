@@ -245,6 +245,14 @@ function UsersPage() {
                 {r.verified_at ? <><ShieldOff className="h-3 w-3" /> Cabut Verif</> : <><ShieldCheck className="h-3 w-3" /> Verifikasi</>}
               </button>
             )}
+            <button
+              onClick={() => removeUser(r)}
+              disabled={busy || r.id === user?.id || r.role === "super_admin"}
+              title={r.role === "super_admin" ? "Super Admin tidak dapat dihapus" : "Hapus user"}
+              className="inline-flex items-center gap-1 rounded-md border border-destructive/40 px-2 py-1 text-xs text-destructive hover:bg-destructive/10 disabled:opacity-40"
+            >
+              <Trash2 className="h-3 w-3" /> Hapus
+            </button>
           </div>
         </td>
       </tr>
