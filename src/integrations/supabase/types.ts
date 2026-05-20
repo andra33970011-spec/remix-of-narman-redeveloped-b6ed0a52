@@ -66,7 +66,21 @@ export type Database = {
             referencedColumns: ["id"]
           },
           {
+            foreignKeyName: "absensi_asn_opd_id_fkey"
+            columns: ["opd_id"]
+            isOneToOne: false
+            referencedRelation: "opd"
+            referencedColumns: ["id"]
+          },
+          {
             foreignKeyName: "absensi_asn_user_fk"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "absensi_asn_user_id_profiles_fkey"
             columns: ["user_id"]
             isOneToOne: false
             referencedRelation: "profiles"
@@ -171,7 +185,21 @@ export type Database = {
             referencedColumns: ["id"]
           },
           {
+            foreignKeyName: "aset_opd_id_fkey"
+            columns: ["opd_id"]
+            isOneToOne: false
+            referencedRelation: "opd"
+            referencedColumns: ["id"]
+          },
+          {
             foreignKeyName: "aset_pemegang_fk"
+            columns: ["pemegang_user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "aset_pemegang_user_id_profiles_fkey"
             columns: ["pemegang_user_id"]
             isOneToOne: false
             referencedRelation: "profiles"
@@ -225,7 +253,21 @@ export type Database = {
             referencedColumns: ["id"]
           },
           {
+            foreignKeyName: "aset_riwayat_aset_id_fkey"
+            columns: ["aset_id"]
+            isOneToOne: false
+            referencedRelation: "aset"
+            referencedColumns: ["id"]
+          },
+          {
             foreignKeyName: "aset_riwayat_oleh_fk"
+            columns: ["oleh"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "aset_riwayat_oleh_profiles_fkey"
             columns: ["oleh"]
             isOneToOne: false
             referencedRelation: "profiles"
@@ -519,6 +561,13 @@ export type Database = {
         Relationships: [
           {
             foreignKeyName: "kantor_qr_opd_fk"
+            columns: ["opd_id"]
+            isOneToOne: true
+            referencedRelation: "opd"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "kantor_qr_opd_id_fkey"
             columns: ["opd_id"]
             isOneToOne: true
             referencedRelation: "opd"
