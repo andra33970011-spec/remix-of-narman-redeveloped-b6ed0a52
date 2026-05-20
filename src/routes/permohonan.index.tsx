@@ -80,7 +80,7 @@ function ListPage() {
     setLoadingList(true);
     const { data } = await supabase
       .from("permohonan")
-      .select("id, kode, judul, kategori, status, tanggal_masuk, wakil_ambil_nama, wakil_ambil_nik, opd:opd_id(singkatan)")
+      .select("id, kode, judul, kategori, status, tanggal_masuk, wakil_ambil_nama, wakil_ambil_nik, opd:opd!opd_id(singkatan)")
       .eq("pemohon_id", uid)
       .order("tanggal_masuk", { ascending: false });
     const rows = (data ?? []) as unknown as Row[];

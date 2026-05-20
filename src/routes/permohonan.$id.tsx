@@ -71,7 +71,7 @@ function DetailPermohonan() {
       // Tidak ada FK eksplisit antara permohonan.pemohon_id dan profiles, jadi query terpisah
       const { data: row, error: rowErr } = await supabase
         .from("permohonan")
-        .select("*, opd:opd_id(nama,singkatan)")
+        .select("*, opd:opd!opd_id(nama,singkatan)")
         .eq("id", id)
         .maybeSingle();
       if (rowErr) {

@@ -101,7 +101,7 @@ export const layananAllWithOpdQueryOptions = () =>
     queryFn: async (): Promise<LayananWithOpd[]> => {
       const { data, error } = await supabase
         .from("layanan_publik")
-        .select("id,judul,slug,deskripsi,sla_hari,urutan,opd:opd_id(id,singkatan,nama,kategori)")
+        .select("id,judul,slug,deskripsi,sla_hari,urutan,opd:opd!opd_id(id,singkatan,nama,kategori)")
         .eq("aktif", true)
         .order("urutan");
       if (error) throw error;

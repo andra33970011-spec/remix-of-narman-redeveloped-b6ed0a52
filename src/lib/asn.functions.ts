@@ -65,7 +65,7 @@ export const listKantorQR = createServerFn({ method: "POST" })
     if (!ctx.isSuper) throw new Error("Forbidden");
     const { data, error } = await supabaseAdmin
       .from("kantor_qr")
-      .select("id,opd_id,token,label,lokasi,aktif,updated_at, opd:opd_id(nama,singkatan)");
+      .select("id,opd_id,token,label,lokasi,aktif,updated_at, opd:opd!opd_id(nama,singkatan)");
     if (error) throw new Error(error.message);
     return { rows: data ?? [] };
   });
@@ -77,7 +77,7 @@ export const resolveKantorQR = createServerFn({ method: "POST" })
   .handler(async ({ data }) => {
     const { data: row, error } = await supabaseAdmin
       .from("kantor_qr")
-      .select("id,opd_id,label,lokasi,aktif, opd:opd_id(nama,singkatan)")
+      .select("id,opd_id,label,lokasi,aktif, opd:opd!opd_id(nama,singkatan)")
       .eq("token", data.token).maybeSingle();
     if (error) throw new Error(error.message);
     if (!row || !row.aktif) throw new Error("QR tidak valid / nonaktif");
@@ -137,7 +137,7 @@ export const listAbsensiSelf = createServerFn({ method: "POST" })
   .handler(async ({ context }) => {
     const { data, error } = await supabaseAdmin
       .from("absensi_asn")
-      .select("id,tipe,waktu,opd:opd_id(nama,singkatan)")
+      .select("id,tipe,waktu,opd:opd!opd_id(nama,singkatan)")
       .eq("user_id", context.userId)
       .order("waktu", { ascending: false })
       .limit(60);
@@ -159,7 +159,7 @@ export const listAbsensiAdmin = createServerFn({ method: "POST" })
     if (!ctx.isSuper && !ctx.isAdminOpd) throw new Error("Forbidden");
     let q = supabaseAdmin
       .from("absensi_asn")
-      .select("id,user_id,tipe,waktu,opd_id, opd:opd_id(nama,singkatan), profile:user_id(nama_lengkap,nip,jabatan)")
+      .select("id,user_id,tipe,waktu,opd_id, opd:opd!opd_id(nama,singkatan), profile:profiles!user_id(nama_lengkap,nip,jabatan)")
       .order("waktu", { ascending: false })
       .limit(500);
     const filterOpd = ctx.isSuper ? (data.opd_id ?? null) : ctx.opdId;
