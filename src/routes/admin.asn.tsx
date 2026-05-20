@@ -166,7 +166,7 @@ function AsetTab({ opds }: { opds: Opd[] }) {
         <div className="grid gap-2 sm:grid-cols-5">
           <input value={form.nama} onChange={(e) => setForm({ ...form, nama: e.target.value })} placeholder="Nama aset" className="input h-9" />
           <select value={form.kategori} onChange={(e) => setForm({ ...form, kategori: e.target.value as typeof form.kategori })} className="input h-9">
-            <option value="kendaraan">Kendaraan</option><option value="elektronik">Elektronik</option><option value="mebel">Mebel</option><option value="bangunan">Bangunan</option><option value="lainnya">Lainnya</option>
+            <option value="kendaraan">Kendaraan</option><option value="elektronik">Elektronik</option><option value="lainnya">Lainnya</option>
           </select>
           <input value={form.merk} onChange={(e) => setForm({ ...form, merk: e.target.value })} placeholder="Merk" className="input h-9" />
           <input value={form.nomor_seri} onChange={(e) => setForm({ ...form, nomor_seri: e.target.value })} placeholder="No. Seri / Plat" className="input h-9" />
