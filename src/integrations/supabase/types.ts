@@ -94,6 +94,7 @@ export type Database = {
       }
       aset: {
         Row: {
+          catatan: string | null
           created_at: string
           deskripsi: string | null
           foto_url: string | null
@@ -116,6 +117,7 @@ export type Database = {
           updated_at: string
         }
         Insert: {
+          catatan?: string | null
           created_at?: string
           deskripsi?: string | null
           foto_url?: string | null
@@ -138,6 +140,7 @@ export type Database = {
           updated_at?: string
         }
         Update: {
+          catatan?: string | null
           created_at?: string
           deskripsi?: string | null
           foto_url?: string | null
