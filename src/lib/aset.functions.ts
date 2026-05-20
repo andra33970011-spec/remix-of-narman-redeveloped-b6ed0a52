@@ -96,7 +96,7 @@ export const listAset = createServerFn({ method: "POST" })
     const ctx = await userCtx(context.userId);
     let q = supabaseAdmin
       .from("aset")
-      .select("id,kode,nama,kategori,merk,nomor_seri,opd_id,pemegang_user_id,lokasi_terkini,lat,lng,status,foto_url,updated_at, opd:opd_id(nama,singkatan), pemegang:pemegang_user_id(nama_lengkap,nip)")
+      .select("id,kode,nama,kategori,merk,nomor_seri,opd_id,pemegang_user_id,lokasi_terkini,lat,lng,status,foto_url,updated_at, opd:opd!opd_id(nama,singkatan), pemegang:profiles!pemegang_user_id(nama_lengkap,nip)")
       .order("updated_at", { ascending: false })
       .limit(500);
     if (data.mine) q = q.eq("pemegang_user_id", context.userId);
@@ -118,7 +118,7 @@ export const resolveAsetByKode = createServerFn({ method: "POST" })
   .handler(async ({ data }) => {
     const { data: row, error } = await supabaseAdmin
       .from("aset")
-      .select("id,kode,nama,kategori,merk,nomor_seri,opd_id,pemegang_user_id,lokasi_terkini,lat,lng,status,foto_url, opd:opd_id(nama,singkatan), pemegang:pemegang_user_id(nama_lengkap)")
+      .select("id,kode,nama,kategori,merk,nomor_seri,opd_id,pemegang_user_id,lokasi_terkini,lat,lng,status,foto_url, opd:opd!opd_id(nama,singkatan), pemegang:profiles!pemegang_user_id(nama_lengkap)")
       .eq("kode", data.kode).maybeSingle();
     if (error) throw new Error(error.message);
     if (!row) throw new Error("Aset tidak ditemukan");
@@ -191,7 +191,7 @@ export const listAsetRiwayat = createServerFn({ method: "POST" })
   .handler(async ({ data }) => {
     const { data: rows, error } = await supabaseAdmin
       .from("aset_riwayat")
-      .select("id,aksi,catatan,lat,lng,lokasi_text,data,created_at, oleh_profile:oleh(nama_lengkap)")
+      .select("id,aksi,catatan,lat,lng,lokasi_text,data,created_at, oleh_profile:profiles!oleh(nama_lengkap)")
       .eq("aset_id", data.aset_id)
       .order("created_at", { ascending: false })
       .limit(200);

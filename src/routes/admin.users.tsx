@@ -3,13 +3,13 @@
 import { useEffect, useMemo, useState } from "react";
 import { createFileRoute } from "@tanstack/react-router";
 import { toast } from "sonner";
-import { Loader2, Save, Search, Ban, CheckCircle2, LogOut, KeyRound, ShieldCheck, ShieldOff } from "lucide-react";
+import { Loader2, Save, Search, Ban, CheckCircle2, LogOut, KeyRound, ShieldCheck, ShieldOff, Trash2 } from "lucide-react";
 import { AdminShell } from "@/components/admin/AdminShell";
 import { AdminGuard } from "@/components/admin/AdminGuard";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/lib/auth-context";
 import {
-  setUserRole, listUsers, setUserSuspended, forceSignOut, sendPasswordReset, setUserVerified,
+  setUserRole, listUsers, setUserSuspended, forceSignOut, sendPasswordReset, setUserVerified, deleteUser,
 } from "@/lib/admin-actions.functions";
 
 export const Route = createFileRoute("/admin/users")({
@@ -107,6 +107,14 @@ function UsersPage() {
     try { await setUserVerified({ data: { user_id: row.id, verified: verify } }); toast.success(verify ? "Akun diverifikasi" : "Verifikasi dicabut"); await load(); }
     catch (e) { toast.error((e as Error).message); } finally { setActId(null); }
   }
+  async function removeUser(row: Row) {
+    if (row.id === user?.id) { toast.error("Tidak dapat menghapus akun sendiri"); return; }
+    if (row.role === "super_admin") { toast.error("Akun Super Admin tidak dapat dihapus"); return; }
+    if (!confirm(`HAPUS PERMANEN akun ${row.email}? Tindakan ini tidak dapat dibatalkan.`)) return;
+    setActId(row.id);
+    try { await deleteUser({ data: { user_id: row.id } }); toast.success("Akun dihapus"); await load(); }
+    catch (e) { toast.error((e as Error).message); } finally { setActId(null); }
+  }
 
   if (!isSuperAdmin) {
     return <AdminShell breadcrumb={[{ label: "Manajemen User" }]}><div className="rounded-xl border border-border bg-card p-12 text-center text-muted-foreground">Halaman ini hanya untuk Super Admin.</div></AdminShell>;
@@ -172,7 +180,13 @@ function UsersPage() {
           )}
         </td>
         <td className="px-4 py-3">
-          <select value={role} onChange={(e) => setRows((prev) => prev.map((p) => p.id === r.id ? { ...p, pendingRole: e.target.value as AppRoleUI } : p))} className="h-9 rounded-md border border-border bg-background px-2 text-sm">
+          <select
+            value={role}
+            disabled={r.role === "super_admin"}
+            title={r.role === "super_admin" ? "Role Super Admin tidak dapat diubah" : undefined}
+            onChange={(e) => setRows((prev) => prev.map((p) => p.id === r.id ? { ...p, pendingRole: e.target.value as AppRoleUI } : p))}
+            className="h-9 rounded-md border border-border bg-background px-2 text-sm disabled:opacity-50"
+          >
             <option value="warga">Warga</option>
             <option value="asn">ASN</option>
             <option value="admin_opd">Admin OPD</option>
@@ -231,6 +245,14 @@ function UsersPage() {
                 {r.verified_at ? <><ShieldOff className="h-3 w-3" /> Cabut Verif</> : <><ShieldCheck className="h-3 w-3" /> Verifikasi</>}
               </button>
             )}
+            <button
+              onClick={() => removeUser(r)}
+              disabled={busy || r.id === user?.id || r.role === "super_admin"}
+              title={r.role === "super_admin" ? "Super Admin tidak dapat dihapus" : "Hapus user"}
+              className="inline-flex items-center gap-1 rounded-md border border-destructive/40 px-2 py-1 text-xs text-destructive hover:bg-destructive/10 disabled:opacity-40"
+            >
+              <Trash2 className="h-3 w-3" /> Hapus
+            </button>
           </div>
         </td>
       </tr>
