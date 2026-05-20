@@ -26,6 +26,7 @@ const superNav = [
   { to: "/admin/users", label: "Manajemen User", icon: Users },
   { to: "/admin/opd", label: "OPD", icon: Building2 },
   { to: "/admin/desa", label: "Daftar Desa", icon: MapPin },
+  { to: "/admin/asn", label: "Modul ASN", icon: ScanLine },
   { to: "/admin/config", label: "Konfigurasi Sistem", icon: Settings },
   { to: "/admin/branding", label: "Kustomisasi Tampilan", icon: Palette },
   { to: "/admin/verifikasi", label: "Verifikasi Akun", icon: ScanLine },
