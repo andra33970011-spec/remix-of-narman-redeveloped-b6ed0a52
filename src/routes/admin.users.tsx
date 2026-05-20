@@ -3,13 +3,13 @@
 import { useEffect, useMemo, useState } from "react";
 import { createFileRoute } from "@tanstack/react-router";
 import { toast } from "sonner";
-import { Loader2, Save, Search, Ban, CheckCircle2, LogOut, KeyRound, ShieldCheck, ShieldOff } from "lucide-react";
+import { Loader2, Save, Search, Ban, CheckCircle2, LogOut, KeyRound, ShieldCheck, ShieldOff, Trash2 } from "lucide-react";
 import { AdminShell } from "@/components/admin/AdminShell";
 import { AdminGuard } from "@/components/admin/AdminGuard";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/lib/auth-context";
 import {
-  setUserRole, listUsers, setUserSuspended, forceSignOut, sendPasswordReset, setUserVerified,
+  setUserRole, listUsers, setUserSuspended, forceSignOut, sendPasswordReset, setUserVerified, deleteUser,
 } from "@/lib/admin-actions.functions";
 
 export const Route = createFileRoute("/admin/users")({
