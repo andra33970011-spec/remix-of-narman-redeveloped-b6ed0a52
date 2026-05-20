@@ -14,6 +14,24 @@ export type Database = {
   }
   public: {
     Tables: {
+      app_setting: {
+        Row: {
+          key: string
+          updated_at: string
+          value: Json
+        }
+        Insert: {
+          key: string
+          updated_at?: string
+          value?: Json
+        }
+        Update: {
+          key?: string
+          updated_at?: string
+          value?: Json
+        }
+        Relationships: []
+      }
       audit_log: {
         Row: {
           aksi: string
@@ -53,6 +71,168 @@ export type Database = {
           user_agent?: string | null
           user_email?: string | null
           user_id?: string | null
+        }
+        Relationships: []
+      }
+      backup_snapshot: {
+        Row: {
+          created_at: string
+          created_by: string | null
+          data: Json
+          id: string
+          label: string
+          size_bytes: number
+          table_counts: Json
+          tipe: string
+        }
+        Insert: {
+          created_at?: string
+          created_by?: string | null
+          data?: Json
+          id?: string
+          label: string
+          size_bytes?: number
+          table_counts?: Json
+          tipe?: string
+        }
+        Update: {
+          created_at?: string
+          created_by?: string | null
+          data?: Json
+          id?: string
+          label?: string
+          size_bytes?: number
+          table_counts?: Json
+          tipe?: string
+        }
+        Relationships: []
+      }
+      berita: {
+        Row: {
+          created_at: string
+          gambar_url: string | null
+          id: string
+          isi: string
+          judul: string
+          penulis_id: string | null
+          published_at: string | null
+          ringkasan: string | null
+          slug: string
+          status: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          gambar_url?: string | null
+          id?: string
+          isi?: string
+          judul: string
+          penulis_id?: string | null
+          published_at?: string | null
+          ringkasan?: string | null
+          slug: string
+          status?: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          gambar_url?: string | null
+          id?: string
+          isi?: string
+          judul?: string
+          penulis_id?: string | null
+          published_at?: string | null
+          ringkasan?: string | null
+          slug?: string
+          status?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      data_terpadu_item: {
+        Row: {
+          aktif: boolean
+          created_at: string
+          format: string | null
+          id: string
+          ikon: string | null
+          kategori: string
+          label: string
+          nilai_num: number | null
+          nilai_num2: number | null
+          nilai_teks: string | null
+          opd: string | null
+          satuan: string | null
+          trend: string | null
+          ukuran: string | null
+          updated_at: string
+          url: string | null
+          urutan: number
+        }
+        Insert: {
+          aktif?: boolean
+          created_at?: string
+          format?: string | null
+          id?: string
+          ikon?: string | null
+          kategori: string
+          label: string
+          nilai_num?: number | null
+          nilai_num2?: number | null
+          nilai_teks?: string | null
+          opd?: string | null
+          satuan?: string | null
+          trend?: string | null
+          ukuran?: string | null
+          updated_at?: string
+          url?: string | null
+          urutan?: number
+        }
+        Update: {
+          aktif?: boolean
+          created_at?: string
+          format?: string | null
+          id?: string
+          ikon?: string | null
+          kategori?: string
+          label?: string
+          nilai_num?: number | null
+          nilai_num2?: number | null
+          nilai_teks?: string | null
+          opd?: string | null
+          satuan?: string | null
+          trend?: string | null
+          ukuran?: string | null
+          updated_at?: string
+          url?: string | null
+          urutan?: number
+        }
+        Relationships: []
+      }
+      desa: {
+        Row: {
+          aktif: boolean
+          created_at: string
+          id: string
+          kecamatan: string | null
+          nama: string
+          updated_at: string
+        }
+        Insert: {
+          aktif?: boolean
+          created_at?: string
+          id?: string
+          kecamatan?: string | null
+          nama: string
+          updated_at?: string
+        }
+        Update: {
+          aktif?: boolean
+          created_at?: string
+          id?: string
+          kecamatan?: string | null
+          nama?: string
+          updated_at?: string
         }
         Relationships: []
       }
@@ -104,6 +284,154 @@ export type Database = {
         }
         Relationships: []
       }
+      kategori_layanan: {
+        Row: {
+          aktif: boolean
+          created_at: string
+          deskripsi: string | null
+          id: string
+          nama: string
+          sla_hari: number
+          slug: string
+          updated_at: string
+        }
+        Insert: {
+          aktif?: boolean
+          created_at?: string
+          deskripsi?: string | null
+          id?: string
+          nama: string
+          sla_hari?: number
+          slug: string
+          updated_at?: string
+        }
+        Update: {
+          aktif?: boolean
+          created_at?: string
+          deskripsi?: string | null
+          id?: string
+          nama?: string
+          sla_hari?: number
+          slug?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      laporan_masyarakat: {
+        Row: {
+          created_at: string
+          ditangani_oleh: string | null
+          email: string
+          id: string
+          kategori: string
+          lokasi: string | null
+          nama: string
+          nik: string | null
+          no_hp: string | null
+          opd_id: string | null
+          status: string
+          tindak_lanjut: string | null
+          updated_at: string
+          uraian: string
+        }
+        Insert: {
+          created_at?: string
+          ditangani_oleh?: string | null
+          email: string
+          id?: string
+          kategori: string
+          lokasi?: string | null
+          nama: string
+          nik?: string | null
+          no_hp?: string | null
+          opd_id?: string | null
+          status?: string
+          tindak_lanjut?: string | null
+          updated_at?: string
+          uraian: string
+        }
+        Update: {
+          created_at?: string
+          ditangani_oleh?: string | null
+          email?: string
+          id?: string
+          kategori?: string
+          lokasi?: string | null
+          nama?: string
+          nik?: string | null
+          no_hp?: string | null
+          opd_id?: string | null
+          status?: string
+          tindak_lanjut?: string | null
+          updated_at?: string
+          uraian?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "laporan_masyarakat_opd_id_fkey"
+            columns: ["opd_id"]
+            isOneToOne: false
+            referencedRelation: "opd"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      layanan_publik: {
+        Row: {
+          aktif: boolean
+          alur: string | null
+          created_at: string
+          deskripsi: string | null
+          id: string
+          ikon: string | null
+          judul: string
+          opd_id: string | null
+          persyaratan: string | null
+          sla_hari: number
+          slug: string
+          updated_at: string
+          urutan: number
+        }
+        Insert: {
+          aktif?: boolean
+          alur?: string | null
+          created_at?: string
+          deskripsi?: string | null
+          id?: string
+          ikon?: string | null
+          judul: string
+          opd_id?: string | null
+          persyaratan?: string | null
+          sla_hari?: number
+          slug: string
+          updated_at?: string
+          urutan?: number
+        }
+        Update: {
+          aktif?: boolean
+          alur?: string | null
+          created_at?: string
+          deskripsi?: string | null
+          id?: string
+          ikon?: string | null
+          judul?: string
+          opd_id?: string | null
+          persyaratan?: string | null
+          sla_hari?: number
+          slug?: string
+          updated_at?: string
+          urutan?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "layanan_publik_opd_id_fkey"
+            columns: ["opd_id"]
+            isOneToOne: false
+            referencedRelation: "opd"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       opd: {
         Row: {
           created_at: string
@@ -125,6 +453,39 @@ export type Database = {
           kategori?: string[]
           nama?: string
           singkatan?: string
+        }
+        Relationships: []
+      }
+      pejabat: {
+        Row: {
+          aktif: boolean
+          created_at: string
+          foto_url: string | null
+          id: string
+          jabatan: string
+          nama: string
+          updated_at: string
+          urutan: number
+        }
+        Insert: {
+          aktif?: boolean
+          created_at?: string
+          foto_url?: string | null
+          id?: string
+          jabatan: string
+          nama: string
+          updated_at?: string
+          urutan?: number
+        }
+        Update: {
+          aktif?: boolean
+          created_at?: string
+          foto_url?: string | null
+          id?: string
+          jabatan?: string
+          nama?: string
+          updated_at?: string
+          urutan?: number
         }
         Relationships: []
       }
@@ -205,6 +566,41 @@ export type Database = {
           },
         ]
       }
+      permohonan_rating: {
+        Row: {
+          created_at: string
+          id: string
+          komentar: string | null
+          permohonan_id: string
+          skor: number
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          komentar?: string | null
+          permohonan_id: string
+          skor: number
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          komentar?: string | null
+          permohonan_id?: string
+          skor?: number
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "permohonan_rating_permohonan_id_fkey"
+            columns: ["permohonan_id"]
+            isOneToOne: false
+            referencedRelation: "permohonan"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       permohonan_riwayat: {
         Row: {
           aksi: string
@@ -243,30 +639,42 @@ export type Database = {
       profiles: {
         Row: {
           created_at: string
+          desa: string | null
           id: string
           nama_lengkap: string
           nik: string | null
           no_hp: string | null
           opd_id: string | null
+          status: string
           updated_at: string
+          verified_at: string | null
+          verified_by: string | null
         }
         Insert: {
           created_at?: string
+          desa?: string | null
           id: string
           nama_lengkap?: string
           nik?: string | null
           no_hp?: string | null
           opd_id?: string | null
+          status?: string
           updated_at?: string
+          verified_at?: string | null
+          verified_by?: string | null
         }
         Update: {
           created_at?: string
+          desa?: string | null
           id?: string
           nama_lengkap?: string
           nik?: string | null
           no_hp?: string | null
           opd_id?: string | null
+          status?: string
           updated_at?: string
+          verified_at?: string | null
+          verified_by?: string | null
         }
         Relationships: [
           {
@@ -277,6 +685,39 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      push_subscription: {
+        Row: {
+          auth: string
+          created_at: string
+          endpoint: string
+          id: string
+          p256dh: string
+          updated_at: string
+          user_agent: string | null
+          user_id: string
+        }
+        Insert: {
+          auth: string
+          created_at?: string
+          endpoint: string
+          id?: string
+          p256dh: string
+          updated_at?: string
+          user_agent?: string | null
+          user_id: string
+        }
+        Update: {
+          auth?: string
+          created_at?: string
+          endpoint?: string
+          id?: string
+          p256dh?: string
+          updated_at?: string
+          user_agent?: string | null
+          user_id?: string
+        }
+        Relationships: []
       }
       rate_limit: {
         Row: {
@@ -323,17 +764,102 @@ export type Database = {
         }
         Relationships: []
       }
+      verification_token: {
+        Row: {
+          created_at: string
+          expires_at: string
+          id: string
+          token: string
+          used_at: string | null
+          used_by: string | null
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          expires_at?: string
+          id?: string
+          token: string
+          used_at?: string | null
+          used_by?: string | null
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          expires_at?: string
+          id?: string
+          token?: string
+          used_at?: string | null
+          used_by?: string | null
+          user_id?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
     }
     Functions: {
+      count_permohonan_bulan_ini: { Args: never; Returns: number }
+      get_user_desa: { Args: { _user_id: string }; Returns: string }
       get_user_opd: { Args: { _user_id: string }; Returns: string }
       has_role: {
         Args: {
           _role: Database["public"]["Enums"]["app_role"]
           _user_id: string
         }
+        Returns: boolean
+      }
+      opd_kinerja_agg: {
+        Args: never
+        Returns: {
+          jumlah_selesai: number
+          opd_id: string
+          selesai_dengan_sla: number
+          status: string
+          tepat_waktu: number
+          total: number
+          total_hari_selesai: number
+        }[]
+      }
+      opd_rating_agg: {
+        Args: never
+        Returns: {
+          jumlah_rating: number
+          opd_id: string
+          total_rating: number
+        }[]
+      }
+      rating_list_admin: {
+        Args: never
+        Returns: {
+          created_at: string
+          komentar: string
+          opd_id: string
+          opd_nama: string
+          opd_singkatan: string
+          pemohon_nama: string
+          permohonan_id: string
+          permohonan_judul: string
+          permohonan_kode: string
+          rating_id: string
+          skor: number
+          user_id: string
+        }[]
+      }
+      riwayat_dengan_petugas: {
+        Args: { _permohonan_id: string }
+        Returns: {
+          aksi: string
+          catatan: string
+          created_at: string
+          email_petugas: string
+          id: string
+          nama_petugas: string
+          oleh: string
+        }[]
+      }
+      user_in_desa: {
+        Args: { _desa: string; _user_id: string }
         Returns: boolean
       }
     }
