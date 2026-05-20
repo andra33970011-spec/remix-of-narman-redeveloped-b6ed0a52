@@ -14,6 +14,45 @@ export type Database = {
   }
   public: {
     Tables: {
+      absensi_asn: {
+        Row: {
+          catatan: string | null
+          created_at: string
+          foto_url: string | null
+          id: string
+          lat: number | null
+          lng: number | null
+          lokasi: string | null
+          tipe: string
+          user_id: string
+          waktu: string
+        }
+        Insert: {
+          catatan?: string | null
+          created_at?: string
+          foto_url?: string | null
+          id?: string
+          lat?: number | null
+          lng?: number | null
+          lokasi?: string | null
+          tipe: string
+          user_id: string
+          waktu?: string
+        }
+        Update: {
+          catatan?: string | null
+          created_at?: string
+          foto_url?: string | null
+          id?: string
+          lat?: number | null
+          lng?: number | null
+          lokasi?: string | null
+          tipe?: string
+          user_id?: string
+          waktu?: string
+        }
+        Relationships: []
+      }
       app_setting: {
         Row: {
           key: string
@@ -29,6 +68,81 @@ export type Database = {
           key?: string
           updated_at?: string
           value?: Json
+        }
+        Relationships: []
+      }
+      aset: {
+        Row: {
+          created_at: string
+          deskripsi: string | null
+          foto_url: string | null
+          id: string
+          kategori: string | null
+          kode: string
+          kondisi: string
+          lokasi: string | null
+          nama: string
+          nilai_perolehan: number | null
+          opd_id: string | null
+          tanggal_perolehan: string | null
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          deskripsi?: string | null
+          foto_url?: string | null
+          id?: string
+          kategori?: string | null
+          kode: string
+          kondisi?: string
+          lokasi?: string | null
+          nama: string
+          nilai_perolehan?: number | null
+          opd_id?: string | null
+          tanggal_perolehan?: string | null
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          deskripsi?: string | null
+          foto_url?: string | null
+          id?: string
+          kategori?: string | null
+          kode?: string
+          kondisi?: string
+          lokasi?: string | null
+          nama?: string
+          nilai_perolehan?: number | null
+          opd_id?: string | null
+          tanggal_perolehan?: string | null
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      aset_riwayat: {
+        Row: {
+          aksi: string
+          aset_id: string
+          catatan: string | null
+          created_at: string
+          id: string
+          oleh: string | null
+        }
+        Insert: {
+          aksi: string
+          aset_id: string
+          catatan?: string | null
+          created_at?: string
+          id?: string
+          oleh?: string | null
+        }
+        Update: {
+          aksi?: string
+          aset_id?: string
+          catatan?: string | null
+          created_at?: string
+          id?: string
+          oleh?: string | null
         }
         Relationships: []
       }
@@ -641,12 +755,15 @@ export type Database = {
           created_at: string
           desa: string | null
           id: string
+          jabatan: string | null
           nama_lengkap: string
           nik: string | null
+          nip: string | null
           no_hp: string | null
           opd_id: string | null
           status: string
           updated_at: string
+          username: string | null
           verified_at: string | null
           verified_by: string | null
         }
@@ -654,12 +771,15 @@ export type Database = {
           created_at?: string
           desa?: string | null
           id: string
+          jabatan?: string | null
           nama_lengkap?: string
           nik?: string | null
+          nip?: string | null
           no_hp?: string | null
           opd_id?: string | null
           status?: string
           updated_at?: string
+          username?: string | null
           verified_at?: string | null
           verified_by?: string | null
         }
@@ -667,12 +787,15 @@ export type Database = {
           created_at?: string
           desa?: string | null
           id?: string
+          jabatan?: string | null
           nama_lengkap?: string
           nik?: string | null
+          nip?: string | null
           no_hp?: string | null
           opd_id?: string | null
           status?: string
           updated_at?: string
+          username?: string | null
           verified_at?: string | null
           verified_by?: string | null
         }
@@ -864,7 +987,7 @@ export type Database = {
       }
     }
     Enums: {
-      app_role: "warga" | "admin_opd" | "super_admin" | "admin_desa"
+      app_role: "warga" | "admin_opd" | "super_admin" | "admin_desa" | "asn"
       job_status: "pending" | "running" | "success" | "failed" | "dead"
       status_permohonan: "baru" | "diproses" | "selesai" | "ditolak"
     }
@@ -994,7 +1117,7 @@ export type CompositeTypes<
 export const Constants = {
   public: {
     Enums: {
-      app_role: ["warga", "admin_opd", "super_admin", "admin_desa"],
+      app_role: ["warga", "admin_opd", "super_admin", "admin_desa", "asn"],
       job_status: ["pending", "running", "success", "failed", "dead"],
       status_permohonan: ["baru", "diproses", "selesai", "ditolak"],
     },
