@@ -28,7 +28,7 @@ function genKode() {
 const asetSchema = z.object({
   id: z.string().uuid().optional(),
   nama: z.string().trim().min(2).max(160),
-  kategori: z.enum(["kendaraan", "elektronik", "mebel", "bangunan", "lainnya"]).default("lainnya"),
+  kategori: z.enum(["kendaraan", "elektronik", "lainnya"]).default("lainnya"),
   merk: z.string().max(120).optional().nullable(),
   nomor_seri: z.string().max(120).optional().nullable(),
   opd_id: z.string().uuid().nullable(),
