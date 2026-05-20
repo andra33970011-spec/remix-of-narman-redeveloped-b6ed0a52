@@ -240,6 +240,16 @@ export function Header() {
                 <Link to="/permohonan/baru" onClick={() => setOpen(false)} className="flex items-center gap-2 rounded-md px-3 py-3 text-sm font-medium text-surface-foreground hover:bg-muted">
                   <FileText className="h-4 w-4" /> Ajukan Permohonan
                 </Link>
+                {isAsn && (
+                  <>
+                    <Link to="/asn/absensi" onClick={() => setOpen(false)} className="flex items-center gap-2 rounded-md px-3 py-3 text-sm font-medium text-surface-foreground hover:bg-muted">
+                      <ShieldCheck className="h-4 w-4" /> Absensi ASN
+                    </Link>
+                    <Link to="/asn/aset" onClick={() => setOpen(false)} className="flex items-center gap-2 rounded-md px-3 py-3 text-sm font-medium text-surface-foreground hover:bg-muted">
+                      <ShieldCheck className="h-4 w-4" /> Tracking Aset
+                    </Link>
+                  </>
+                )}
                 {isAdmin && (
                   <Link to="/admin" onClick={() => setOpen(false)} className="flex items-center gap-2 rounded-md px-3 py-3 text-sm font-medium text-surface-foreground hover:bg-muted">
                     <ShieldCheck className="h-4 w-4" /> Dashboard Admin
