@@ -107,6 +107,14 @@ function UsersPage() {
     try { await setUserVerified({ data: { user_id: row.id, verified: verify } }); toast.success(verify ? "Akun diverifikasi" : "Verifikasi dicabut"); await load(); }
     catch (e) { toast.error((e as Error).message); } finally { setActId(null); }
   }
+  async function removeUser(row: Row) {
+    if (row.id === user?.id) { toast.error("Tidak dapat menghapus akun sendiri"); return; }
+    if (row.role === "super_admin") { toast.error("Akun Super Admin tidak dapat dihapus"); return; }
+    if (!confirm(`HAPUS PERMANEN akun ${row.email}? Tindakan ini tidak dapat dibatalkan.`)) return;
+    setActId(row.id);
+    try { await deleteUser({ data: { user_id: row.id } }); toast.success("Akun dihapus"); await load(); }
+    catch (e) { toast.error((e as Error).message); } finally { setActId(null); }
+  }
 
   if (!isSuperAdmin) {
     return <AdminShell breadcrumb={[{ label: "Manajemen User" }]}><div className="rounded-xl border border-border bg-card p-12 text-center text-muted-foreground">Halaman ini hanya untuk Super Admin.</div></AdminShell>;
