@@ -18,11 +18,13 @@ export type Database = {
         Row: {
           catatan: string | null
           created_at: string
+          device_info: string | null
           foto_url: string | null
           id: string
           lat: number | null
           lng: number | null
           lokasi: string | null
+          opd_id: string | null
           tipe: string
           user_id: string
           waktu: string
@@ -30,11 +32,13 @@ export type Database = {
         Insert: {
           catatan?: string | null
           created_at?: string
+          device_info?: string | null
           foto_url?: string | null
           id?: string
           lat?: number | null
           lng?: number | null
           lokasi?: string | null
+          opd_id?: string | null
           tipe: string
           user_id: string
           waktu?: string
@@ -42,11 +46,13 @@ export type Database = {
         Update: {
           catatan?: string | null
           created_at?: string
+          device_info?: string | null
           foto_url?: string | null
           id?: string
           lat?: number | null
           lng?: number | null
           lokasi?: string | null
+          opd_id?: string | null
           tipe?: string
           user_id?: string
           waktu?: string
@@ -80,10 +86,17 @@ export type Database = {
           kategori: string | null
           kode: string
           kondisi: string
+          lat: number | null
+          lng: number | null
           lokasi: string | null
+          lokasi_terkini: string | null
+          merk: string | null
           nama: string
           nilai_perolehan: number | null
+          nomor_seri: string | null
           opd_id: string | null
+          pemegang_user_id: string | null
+          status: string
           tanggal_perolehan: string | null
           updated_at: string
         }
@@ -95,10 +108,17 @@ export type Database = {
           kategori?: string | null
           kode: string
           kondisi?: string
+          lat?: number | null
+          lng?: number | null
           lokasi?: string | null
+          lokasi_terkini?: string | null
+          merk?: string | null
           nama: string
           nilai_perolehan?: number | null
+          nomor_seri?: string | null
           opd_id?: string | null
+          pemegang_user_id?: string | null
+          status?: string
           tanggal_perolehan?: string | null
           updated_at?: string
         }
@@ -110,10 +130,17 @@ export type Database = {
           kategori?: string | null
           kode?: string
           kondisi?: string
+          lat?: number | null
+          lng?: number | null
           lokasi?: string | null
+          lokasi_terkini?: string | null
+          merk?: string | null
           nama?: string
           nilai_perolehan?: number | null
+          nomor_seri?: string | null
           opd_id?: string | null
+          pemegang_user_id?: string | null
+          status?: string
           tanggal_perolehan?: string | null
           updated_at?: string
         }
@@ -125,7 +152,11 @@ export type Database = {
           aset_id: string
           catatan: string | null
           created_at: string
+          data: Json | null
           id: string
+          lat: number | null
+          lng: number | null
+          lokasi_text: string | null
           oleh: string | null
         }
         Insert: {
@@ -133,7 +164,11 @@ export type Database = {
           aset_id: string
           catatan?: string | null
           created_at?: string
+          data?: Json | null
           id?: string
+          lat?: number | null
+          lng?: number | null
+          lokasi_text?: string | null
           oleh?: string | null
         }
         Update: {
@@ -141,7 +176,11 @@ export type Database = {
           aset_id?: string
           catatan?: string | null
           created_at?: string
+          data?: Json | null
           id?: string
+          lat?: number | null
+          lng?: number | null
+          lokasi_text?: string | null
           oleh?: string | null
         }
         Relationships: []
@@ -395,6 +434,39 @@ export type Database = {
           scheduled_at?: string
           started_at?: string | null
           status?: Database["public"]["Enums"]["job_status"]
+        }
+        Relationships: []
+      }
+      kantor_qr: {
+        Row: {
+          aktif: boolean
+          created_at: string
+          id: string
+          label: string | null
+          lokasi: string | null
+          opd_id: string
+          token: string
+          updated_at: string
+        }
+        Insert: {
+          aktif?: boolean
+          created_at?: string
+          id?: string
+          label?: string | null
+          lokasi?: string | null
+          opd_id: string
+          token: string
+          updated_at?: string
+        }
+        Update: {
+          aktif?: boolean
+          created_at?: string
+          id?: string
+          label?: string | null
+          lokasi?: string | null
+          opd_id?: string
+          token?: string
+          updated_at?: string
         }
         Relationships: []
       }
