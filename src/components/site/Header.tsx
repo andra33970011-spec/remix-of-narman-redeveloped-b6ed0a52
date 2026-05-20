@@ -269,3 +269,29 @@ export function Header() {
     </header>
   );
 }
+
+function AsnDropdown() {
+  const [open, setOpen] = useState(false);
+  const ref = useRef<HTMLDivElement>(null);
+  useEffect(() => {
+    function h(e: MouseEvent) { if (ref.current && !ref.current.contains(e.target as Node)) setOpen(false); }
+    document.addEventListener("mousedown", h);
+    return () => document.removeEventListener("mousedown", h);
+  }, []);
+  return (
+    <div ref={ref} className="relative">
+      <button
+        onClick={() => setOpen((v) => !v)}
+        className="inline-flex items-center gap-1 rounded-md px-3 py-2 text-sm font-medium text-surface-foreground hover:bg-primary-soft hover:text-primary"
+      >
+        ASN <ChevronDown className="h-3.5 w-3.5 opacity-70" />
+      </button>
+      {open && (
+        <div className="absolute right-0 mt-1 w-52 overflow-hidden rounded-lg border border-border bg-card shadow-lg">
+          <Link to="/asn/absensi" onClick={() => setOpen(false)} className="block px-3 py-2 text-sm text-foreground hover:bg-muted">Absensi (Scan QR Kantor)</Link>
+          <Link to="/asn/aset" onClick={() => setOpen(false)} className="block px-3 py-2 text-sm text-foreground hover:bg-muted">Tracking Aset</Link>
+        </div>
+      )}
+    </div>
+  );
+}
