@@ -140,7 +140,7 @@ type AsetRow = { id: string; kode: string; nama: string; kategori: string; opd_i
 
 function AsetTab({ opds }: { opds: Opd[] }) {
   const [rows, setRows] = useState<AsetRow[]>([]);
-  const [form, setForm] = useState<{ nama: string; kategori: "kendaraan" | "elektronik" | "mebel" | "bangunan" | "lainnya"; merk: string; nomor_seri: string; opd_id: string }>({ nama: "", kategori: "kendaraan", merk: "", nomor_seri: "", opd_id: "" });
+  const [form, setForm] = useState<{ nama: string; kategori: "kendaraan" | "elektronik" | "lainnya"; merk: string; nomor_seri: string; opd_id: string }>({ nama: "", kategori: "kendaraan", merk: "", nomor_seri: "", opd_id: "" });
   const [busy, setBusy] = useState(false);
 
   async function reload() { const r = await listAset({ data: {} }); setRows((r as { rows: AsetRow[] }).rows); }
