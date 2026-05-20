@@ -57,7 +57,22 @@ export type Database = {
           user_id?: string
           waktu?: string
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "absensi_asn_opd_fk"
+            columns: ["opd_id"]
+            isOneToOne: false
+            referencedRelation: "opd"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "absensi_asn_user_fk"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       app_setting: {
         Row: {
@@ -144,7 +159,22 @@ export type Database = {
           tanggal_perolehan?: string | null
           updated_at?: string
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "aset_opd_fk"
+            columns: ["opd_id"]
+            isOneToOne: false
+            referencedRelation: "opd"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "aset_pemegang_fk"
+            columns: ["pemegang_user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       aset_riwayat: {
         Row: {
@@ -183,7 +213,22 @@ export type Database = {
           lokasi_text?: string | null
           oleh?: string | null
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "aset_riwayat_aset_fk"
+            columns: ["aset_id"]
+            isOneToOne: false
+            referencedRelation: "aset"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "aset_riwayat_oleh_fk"
+            columns: ["oleh"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       audit_log: {
         Row: {
@@ -468,7 +513,15 @@ export type Database = {
           token?: string
           updated_at?: string
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "kantor_qr_opd_fk"
+            columns: ["opd_id"]
+            isOneToOne: true
+            referencedRelation: "opd"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       kategori_layanan: {
         Row: {
