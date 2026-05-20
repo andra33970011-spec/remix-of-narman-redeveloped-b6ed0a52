@@ -6,7 +6,8 @@ import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/lib/auth-context";
 import { PageShell } from "@/components/site/PageShell";
 import { fetchDesaList, type Desa } from "@/lib/site-settings";
-import { applyStaffRegistration, listOpdPublic } from "@/lib/registration.functions";
+import { listOpdPublic } from "@/lib/registration.functions";
+import { resolveUsernameEmail, signupWithUsername } from "@/lib/auth-username.functions";
 
 type AuthSearch = { redirect?: string };
 
@@ -39,15 +40,8 @@ const ROLE_LABEL: Record<RoleTab, string> = {
   asn: "ASN",
 };
 
-const baseSignIn = z.object({
-  email: z.string().trim().email("Email tidak valid").max(255),
-  password: z.string().min(6, "Password minimal 6 karakter").max(72),
-});
-
-const baseSignUp = baseSignIn.extend({
-  nama_lengkap: z.string().trim().min(2, "Nama minimal 2 karakter").max(120),
-  no_hp: z.string().trim().regex(/^(\+62|62|0)8\d{7,12}$/, "Nomor HP tidak valid"),
-});
+const usernameRule = z.string().trim().min(3, "Username minimal 3 karakter").max(40)
+  .regex(/^[a-zA-Z0-9_.-]+$/, "Username hanya huruf, angka, . _ -");
 
 type Opd = { id: string; nama: string; singkatan: string };
 
@@ -59,6 +53,7 @@ function AuthPage() {
   const [roleTab, setRoleTab] = useState<RoleTab>("warga");
   const [busy, setBusy] = useState(false);
   const [form, setForm] = useState({
+    username: "",
     email: "",
     password: "",
     nama_lengkap: "",
@@ -73,9 +68,7 @@ function AuthPage() {
   const [opdList, setOpdList] = useState<Opd[]>([]);
 
   useEffect(() => { fetchDesaList(true).then(setDesaList).catch(() => {}); }, []);
-  useEffect(() => {
-    listOpdPublic().then((r) => setOpdList(r.rows as Opd[])).catch(() => {});
-  }, []);
+  useEffect(() => { listOpdPublic().then((r) => setOpdList(r.rows as Opd[])).catch(() => {}); }, []);
 
   const goAfterAuth = () => {
     if (redirect) window.location.assign(redirect);
@@ -92,14 +85,18 @@ function AuthPage() {
     setBusy(true);
     try {
       if (mode === "signin") {
-        const parsed = baseSignIn.parse({ email: form.email, password: form.password });
-        const { error } = await supabase.auth.signInWithPassword(parsed);
+        const username = form.username.trim();
+        if (!username) throw new Error("Username wajib diisi");
+        if (!form.password) throw new Error("Password wajib diisi");
+        const { email } = await resolveUsernameEmail({ data: { username } });
+        const { error } = await supabase.auth.signInWithPassword({ email, password: form.password });
         if (error) throw error;
         toast.success("Berhasil masuk");
         goAfterAuth();
         return;
       }
       if (mode === "forgot") {
+        if (!form.email) throw new Error("Email pemulihan wajib diisi");
         const { error } = await supabase.auth.resetPasswordForEmail(form.email, {
           redirectTo: `${window.location.origin}/reset-password`,
         });
@@ -109,66 +106,54 @@ function AuthPage() {
         return;
       }
 
-      // ===== SIGNUP =====
-      const base = baseSignUp.parse({
-        email: form.email,
-        password: form.password,
-        nama_lengkap: form.nama_lengkap,
-        no_hp: form.no_hp,
-      });
+      // ===== SIGNUP via username =====
+      const username = usernameRule.parse(form.username);
+      if (!form.password || form.password.length < 6) throw new Error("Password minimal 6 karakter");
+      if (!form.nama_lengkap.trim()) throw new Error("Nama lengkap wajib diisi");
+      if (form.email && !z.string().email().safeParse(form.email).success) throw new Error("Email tidak valid");
 
-      // Validasi per role
       if (roleTab === "warga") {
         if (!/^\d{16}$/.test(form.nik)) throw new Error("NIK harus 16 digit angka");
         if (!form.desa) throw new Error("Desa wajib dipilih");
       }
-      if (roleTab === "admin_desa") {
-        if (!form.desa) throw new Error("Desa yang Anda kelola wajib dipilih");
-      }
-      if (roleTab === "admin_opd") {
-        if (!form.opd_id) throw new Error("OPD wajib dipilih");
-      }
+      if (roleTab === "admin_desa" && !form.desa) throw new Error("Desa yang Anda kelola wajib dipilih");
+      if (roleTab === "admin_opd" && !form.opd_id) throw new Error("OPD wajib dipilih");
       if (roleTab === "asn") {
         if (!form.opd_id) throw new Error("OPD/Instansi wajib dipilih");
         if (!/^\d{8,20}$/.test(form.nip)) throw new Error("NIP harus 8-20 digit angka");
         if (!form.jabatan.trim()) throw new Error("Jabatan wajib diisi");
       }
 
-      const { error: serr } = await supabase.auth.signUp({
-        email: base.email,
-        password: base.password,
-        options: {
-          emailRedirectTo: `${window.location.origin}/`,
-          data: {
-            nama_lengkap: base.nama_lengkap,
-            no_hp: base.no_hp,
-            nik: roleTab === "warga" ? form.nik : null,
-            desa: roleTab === "warga" || roleTab === "admin_desa" ? form.desa : null,
-          },
+      const res = await signupWithUsername({
+        data: {
+          username,
+          password: form.password,
+          email: form.email || null,
+          nama_lengkap: form.nama_lengkap,
+          no_hp: form.no_hp || null,
+          nik: roleTab === "warga" ? form.nik : null,
+          desa: roleTab === "warga" || roleTab === "admin_desa" ? form.desa : null,
+          opd_id: roleTab === "admin_opd" || roleTab === "asn" ? form.opd_id : null,
+          nip: roleTab === "asn" ? form.nip : null,
+          jabatan: roleTab === "asn" ? form.jabatan : null,
+          requested_role: roleTab,
         },
       });
-      if (serr) throw serr;
 
-      // Jika daftar sebagai staf, panggil server function untuk request role.
-      if (roleTab !== "warga") {
-        try {
-          await applyStaffRegistration({
-            data: {
-              requested_role: roleTab,
-              opd_id: roleTab === "admin_opd" || roleTab === "asn" ? form.opd_id : null,
-              desa: roleTab === "admin_desa" ? form.desa : null,
-              nip: roleTab === "asn" ? form.nip : null,
-              jabatan: roleTab === "asn" ? form.jabatan : null,
-            },
-          });
-          toast.success("Pendaftaran berhasil. Akun menunggu verifikasi Super Admin.");
-        } catch (err) {
-          toast.error("Akun dibuat, namun gagal menyimpan data peran: " + (err as Error).message);
-        }
+      // Auto login
+      const { error: signErr } = await supabase.auth.signInWithPassword({
+        email: (res as { email: string }).email,
+        password: form.password,
+      });
+      if (signErr) {
+        toast.success("Akun dibuat. Silakan masuk dengan username Anda.");
+        setMode("signin");
       } else {
-        toast.success("Akun warga dibuat.");
+        toast.success(roleTab === "warga"
+          ? "Pendaftaran berhasil."
+          : "Pendaftaran berhasil. Akun menunggu verifikasi Super Admin.");
+        goAfterAuth();
       }
-      goAfterAuth();
     } catch (err) {
       const msg = err instanceof z.ZodError ? err.issues[0].message : (err as Error).message;
       toast.error(msg);
@@ -189,7 +174,7 @@ function AuthPage() {
             {mode === "forgot" && "Reset Password"}
           </h1>
           <p className="mt-1 text-sm text-muted-foreground">
-            Portal layanan Kabupaten Buton Selatan.
+            Portal layanan Kabupaten Buton Selatan. Login menggunakan <b>username</b> + password.
           </p>
 
           {showSignupExtras && (
@@ -220,41 +205,58 @@ function AuthPage() {
           )}
 
           <form onSubmit={onSubmit} className="mt-5 space-y-4">
+            {mode === "signin" && (
+              <>
+                <Field label="Username" required>
+                  <input
+                    required
+                    autoComplete="username"
+                    value={form.username}
+                    onChange={(e) => setForm({ ...form, username: e.target.value })}
+                    className="input"
+                    placeholder="contoh: narman"
+                  />
+                </Field>
+                <Field label="Password" required>
+                  <input
+                    type="password"
+                    required
+                    autoComplete="current-password"
+                    value={form.password}
+                    onChange={(e) => setForm({ ...form, password: e.target.value })}
+                    className="input"
+                  />
+                </Field>
+              </>
+            )}
+
             {showSignupExtras && (
               <>
-                <Field label="Nama Lengkap" required>
+                <Field label="Username" required>
                   <input
                     required
-                    value={form.nama_lengkap}
-                    onChange={(e) => setForm({ ...form, nama_lengkap: e.target.value })}
+                    value={form.username}
+                    onChange={(e) => setForm({ ...form, username: e.target.value.toLowerCase() })}
                     className="input"
+                    placeholder="hanya huruf, angka, . _ -"
                   />
                 </Field>
-                <Field label="Nomor HP" required>
-                  <input
-                    required
-                    inputMode="tel"
-                    value={form.no_hp}
-                    onChange={(e) => setForm({ ...form, no_hp: e.target.value })}
-                    className="input"
-                    placeholder="08xxxxxxxxxx"
-                  />
+                <Field label="Nama Lengkap" required>
+                  <input required value={form.nama_lengkap} onChange={(e) => setForm({ ...form, nama_lengkap: e.target.value })} className="input" />
+                </Field>
+                <Field label="Email (opsional)">
+                  <input type="email" value={form.email} onChange={(e) => setForm({ ...form, email: e.target.value })} className="input" placeholder="dipakai untuk reset password" />
+                </Field>
+                <Field label="Nomor HP">
+                  <input inputMode="tel" value={form.no_hp} onChange={(e) => setForm({ ...form, no_hp: e.target.value })} className="input" placeholder="08xxxxxxxxxx" />
                 </Field>
 
-                {/* Field per role */}
                 {roleTab === "warga" && (
                   <>
                     <Field label="NIK" required>
-                      <input
-                        required
-                        inputMode="numeric"
-                        pattern="\d{16}"
-                        maxLength={16}
-                        value={form.nik}
+                      <input required inputMode="numeric" pattern="\d{16}" maxLength={16} value={form.nik}
                         onChange={(e) => setForm({ ...form, nik: e.target.value.replace(/\D/g, "") })}
-                        className="input"
-                        placeholder="16 digit NIK"
-                      />
+                        className="input" placeholder="16 digit NIK" />
                     </Field>
                     <DesaSelect form={form} setForm={setForm} desaList={desaList} label="Desa / Kelurahan" />
                   </>
@@ -269,48 +271,30 @@ function AuthPage() {
                   <>
                     <OpdSelect form={form} setForm={setForm} opdList={opdList} label="OPD / Instansi Penugasan" />
                     <Field label="NIP" required>
-                      <input
-                        required
-                        inputMode="numeric"
-                        value={form.nip}
+                      <input required inputMode="numeric" value={form.nip}
                         onChange={(e) => setForm({ ...form, nip: e.target.value.replace(/\D/g, "") })}
-                        className="input"
-                        placeholder="Nomor Induk Pegawai"
-                      />
+                        className="input" placeholder="Nomor Induk Pegawai" />
                     </Field>
                     <Field label="Jabatan" required>
-                      <input
-                        required
-                        value={form.jabatan}
-                        onChange={(e) => setForm({ ...form, jabatan: e.target.value })}
-                        className="input"
-                        placeholder="contoh: Analis Kepegawaian"
-                      />
+                      <input required value={form.jabatan} onChange={(e) => setForm({ ...form, jabatan: e.target.value })}
+                        className="input" placeholder="contoh: Analis Kepegawaian" />
                     </Field>
                   </>
                 )}
+
+                <Field label="Password" required>
+                  <input type="password" required value={form.password}
+                    onChange={(e) => setForm({ ...form, password: e.target.value })}
+                    className="input" minLength={6} />
+                </Field>
               </>
             )}
 
-            <Field label="Email" required>
-              <input
-                type="email"
-                required
-                value={form.email}
-                onChange={(e) => setForm({ ...form, email: e.target.value })}
-                className="input"
-              />
-            </Field>
-            {mode !== "forgot" && (
-              <Field label="Password" required>
-                <input
-                  type="password"
-                  required
-                  value={form.password}
-                  onChange={(e) => setForm({ ...form, password: e.target.value })}
-                  className="input"
-                  minLength={6}
-                />
+            {mode === "forgot" && (
+              <Field label="Email Pemulihan" required>
+                <input type="email" required value={form.email}
+                  onChange={(e) => setForm({ ...form, email: e.target.value })}
+                  className="input" placeholder="email yang terdaftar pada akun Anda" />
               </Field>
             )}
 
@@ -357,12 +341,8 @@ function DesaSelect({
 }: { form: { desa: string }; setForm: (v: never) => void; desaList: Desa[]; label: string }) {
   return (
     <Field label={label} required>
-      <select
-        required
-        value={form.desa}
-        onChange={(e) => setForm({ ...form, desa: e.target.value } as never)}
-        className="input"
-      >
+      <select required value={form.desa}
+        onChange={(e) => setForm({ ...form, desa: e.target.value } as never)} className="input">
         <option value="">— Pilih desa —</option>
         {desaList.map((d) => (
           <option key={d.id} value={d.nama}>
@@ -370,9 +350,7 @@ function DesaSelect({
           </option>
         ))}
       </select>
-      {desaList.length === 0 && (
-        <p className="mt-1 text-xs text-muted-foreground">Daftar desa belum tersedia. Hubungi admin.</p>
-      )}
+      {desaList.length === 0 && <p className="mt-1 text-xs text-muted-foreground">Daftar desa belum tersedia. Hubungi admin.</p>}
     </Field>
   );
 }
@@ -382,22 +360,14 @@ function OpdSelect({
 }: { form: { opd_id: string }; setForm: (v: never) => void; opdList: Opd[]; label: string }) {
   return (
     <Field label={label} required>
-      <select
-        required
-        value={form.opd_id}
-        onChange={(e) => setForm({ ...form, opd_id: e.target.value } as never)}
-        className="input"
-      >
+      <select required value={form.opd_id}
+        onChange={(e) => setForm({ ...form, opd_id: e.target.value } as never)} className="input">
         <option value="">— Pilih OPD/Instansi —</option>
         {opdList.map((o) => (
-          <option key={o.id} value={o.id}>
-            {o.singkatan} — {o.nama}
-          </option>
+          <option key={o.id} value={o.id}>{o.singkatan} — {o.nama}</option>
         ))}
       </select>
-      {opdList.length === 0 && (
-        <p className="mt-1 text-xs text-muted-foreground">Daftar OPD belum tersedia.</p>
-      )}
+      {opdList.length === 0 && <p className="mt-1 text-xs text-muted-foreground">Daftar OPD belum tersedia.</p>}
     </Field>
   );
 }
