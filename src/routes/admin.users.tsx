@@ -180,7 +180,13 @@ function UsersPage() {
           )}
         </td>
         <td className="px-4 py-3">
-          <select value={role} onChange={(e) => setRows((prev) => prev.map((p) => p.id === r.id ? { ...p, pendingRole: e.target.value as AppRoleUI } : p))} className="h-9 rounded-md border border-border bg-background px-2 text-sm">
+          <select
+            value={role}
+            disabled={r.role === "super_admin"}
+            title={r.role === "super_admin" ? "Role Super Admin tidak dapat diubah" : undefined}
+            onChange={(e) => setRows((prev) => prev.map((p) => p.id === r.id ? { ...p, pendingRole: e.target.value as AppRoleUI } : p))}
+            className="h-9 rounded-md border border-border bg-background px-2 text-sm disabled:opacity-50"
+          >
             <option value="warga">Warga</option>
             <option value="asn">ASN</option>
             <option value="admin_opd">Admin OPD</option>
