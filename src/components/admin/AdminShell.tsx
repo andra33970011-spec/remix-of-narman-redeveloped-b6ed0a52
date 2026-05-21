@@ -3,7 +3,8 @@
 // dan ditampilkan sebagai drawer pada perangkat mobile (Android).
 import { type ReactNode, useEffect, useState } from "react";
 import { Link } from "@tanstack/react-router";
-import { LayoutDashboard, Inbox, Users, FileClock, Database as DbIcon, ChevronRight, LogOut, Building2, Newspaper, FolderOpen, UserSquare2, Star, MessageSquare, ListChecks, ScanLine, MapPin, Settings, Menu, X, Palette } from "lucide-react";
+import { LayoutDashboard, Inbox, Users, FileClock, Database as DbIcon, ChevronRight, LogOut, Building2, Newspaper, FolderOpen, UserSquare2, Star, MessageSquare, ListChecks, ScanLine, MapPin, Settings, Menu, X, Palette, Boxes } from "lucide-react";
+
 import lambang from "@/assets/lambang.png";
 import { useAuth } from "@/lib/auth-context";
 import { supabase } from "@/integrations/supabase/client";
@@ -27,6 +28,8 @@ const superNav = [
   { to: "/admin/opd", label: "OPD", icon: Building2 },
   { to: "/admin/desa", label: "Daftar Desa", icon: MapPin },
   { to: "/admin/asn", label: "Modul ASN", icon: ScanLine },
+  { to: "/admin/aset", label: "Modul Aset", icon: Boxes },
+
   { to: "/admin/config", label: "Konfigurasi Sistem", icon: Settings },
   { to: "/admin/branding", label: "Kustomisasi Tampilan", icon: Palette },
   { to: "/admin/verifikasi", label: "Verifikasi Akun", icon: ScanLine },
