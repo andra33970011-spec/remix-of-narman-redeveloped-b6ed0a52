@@ -134,6 +134,7 @@ export const scanAset = createServerFn({ method: "POST" })
       lng: z.number().optional().nullable(),
       lokasi_text: z.string().max(255).optional().nullable(),
       catatan: z.string().max(500).optional().nullable(),
+      foto_url: z.string().max(1000).optional().nullable(),
     }).parse(input),
   )
   .handler(async ({ data, context }) => {
@@ -146,10 +147,11 @@ export const scanAset = createServerFn({ method: "POST" })
     if (!aset) throw new Error("Aset tidak ditemukan");
 
     // Update lokasi terkini
-    const update: { lat?: number | null; lng?: number | null; lokasi_terkini?: string | null } = {};
+    const update: { lat?: number | null; lng?: number | null; lokasi_terkini?: string | null; foto_url?: string | null } = {};
     if (data.lat !== null && data.lat !== undefined) update.lat = data.lat;
     if (data.lng !== null && data.lng !== undefined) update.lng = data.lng;
     if (data.lokasi_text) update.lokasi_terkini = data.lokasi_text;
+    if (data.foto_url) update.foto_url = data.foto_url;
     if (Object.keys(update).length > 0) {
       await supabaseAdmin.from("aset").update(update).eq("id", aset.id);
     }
@@ -162,9 +164,11 @@ export const scanAset = createServerFn({ method: "POST" })
       lat: data.lat ?? null,
       lng: data.lng ?? null,
       lokasi_text: data.lokasi_text ?? null,
+      data: data.foto_url ? ({ foto_url: data.foto_url } as never) : null,
     });
     return { ok: true, aset_id: aset.id };
   });
+
 
 export const assignAsetPemegang = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
