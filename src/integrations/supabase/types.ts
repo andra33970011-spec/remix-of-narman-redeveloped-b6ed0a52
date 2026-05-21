@@ -491,8 +491,11 @@ export type Database = {
           created_at: string
           id: string
           label: string | null
+          lat: number | null
+          lng: number | null
           lokasi: string | null
           opd_id: string
+          radius_m: number
           token: string
           updated_at: string
         }
@@ -501,8 +504,11 @@ export type Database = {
           created_at?: string
           id?: string
           label?: string | null
+          lat?: number | null
+          lng?: number | null
           lokasi?: string | null
           opd_id: string
+          radius_m?: number
           token: string
           updated_at?: string
         }
@@ -511,8 +517,11 @@ export type Database = {
           created_at?: string
           id?: string
           label?: string | null
+          lat?: number | null
+          lng?: number | null
           lokasi?: string | null
           opd_id?: string
+          radius_m?: number
           token?: string
           updated_at?: string
         }
