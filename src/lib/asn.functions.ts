@@ -61,12 +61,15 @@ export const regenerateKantorQR = createServerFn({ method: "POST" })
     const { data: existing } = await supabaseAdmin
       .from("kantor_qr").select("id,token").eq("opd_id", data.opd_id).maybeSingle();
     const token = existing && !data.rotate ? existing.token : randomToken(24);
-    const patch: Record<string, unknown> = { token, aktif: true };
-    if (data.label !== undefined) patch.label = data.label ?? null;
-    if (data.lokasi !== undefined) patch.lokasi = data.lokasi ?? null;
-    if (data.lat !== undefined) patch.lat = data.lat;
-    if (data.lng !== undefined) patch.lng = data.lng;
-    if (data.radius_m !== undefined) patch.radius_m = data.radius_m;
+    const patch = {
+      token,
+      aktif: true,
+      ...(data.label !== undefined ? { label: data.label ?? null } : {}),
+      ...(data.lokasi !== undefined ? { lokasi: data.lokasi ?? null } : {}),
+      ...(data.lat !== undefined ? { lat: data.lat } : {}),
+      ...(data.lng !== undefined ? { lng: data.lng } : {}),
+      ...(data.radius_m !== undefined ? { radius_m: data.radius_m } : {}),
+    };
 
     if (existing) {
       const { error } = await supabaseAdmin.from("kantor_qr").update(patch).eq("id", existing.id);
@@ -75,6 +78,7 @@ export const regenerateKantorQR = createServerFn({ method: "POST" })
       const { error } = await supabaseAdmin.from("kantor_qr").insert({ opd_id: data.opd_id, ...patch });
       if (error) throw new Error(error.message);
     }
+
     return { ok: true, token };
   });
 
