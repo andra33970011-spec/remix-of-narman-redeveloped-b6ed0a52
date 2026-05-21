@@ -43,6 +43,7 @@ import { Route as AdminBrandingRouteImport } from './routes/admin.branding'
 import { Route as AdminBackupRouteImport } from './routes/admin.backup'
 import { Route as AdminAuditRouteImport } from './routes/admin.audit'
 import { Route as AdminAsnRouteImport } from './routes/admin.asn'
+import { Route as AdminAsetRouteImport } from './routes/admin.aset'
 import { Route as AsnScanTokenRouteImport } from './routes/asn.scan.$token'
 import { Route as ApiPublicHooksStorageCleanupRouteImport } from './routes/api/public/hooks/storage-cleanup'
 import { Route as ApiPublicHooksBackupSnapshotRouteImport } from './routes/api/public/hooks/backup-snapshot'
@@ -217,6 +218,11 @@ const AdminAsnRoute = AdminAsnRouteImport.update({
   path: '/admin/asn',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AdminAsetRoute = AdminAsetRouteImport.update({
+  id: '/admin/aset',
+  path: '/admin/aset',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const AsnScanTokenRoute = AsnScanTokenRouteImport.update({
   id: '/asn/scan/$token',
   path: '/asn/scan/$token',
@@ -245,6 +251,7 @@ export interface FileRoutesByFullPath {
   '/kontak': typeof KontakRoute
   '/reset-password': typeof ResetPasswordRoute
   '/tentang': typeof TentangRoute
+  '/admin/aset': typeof AdminAsetRoute
   '/admin/asn': typeof AdminAsnRoute
   '/admin/audit': typeof AdminAuditRoute
   '/admin/backup': typeof AdminBackupRoute
@@ -284,6 +291,7 @@ export interface FileRoutesByTo {
   '/kontak': typeof KontakRoute
   '/reset-password': typeof ResetPasswordRoute
   '/tentang': typeof TentangRoute
+  '/admin/aset': typeof AdminAsetRoute
   '/admin/asn': typeof AdminAsnRoute
   '/admin/audit': typeof AdminAuditRoute
   '/admin/backup': typeof AdminBackupRoute
@@ -324,6 +332,7 @@ export interface FileRoutesById {
   '/kontak': typeof KontakRoute
   '/reset-password': typeof ResetPasswordRoute
   '/tentang': typeof TentangRoute
+  '/admin/aset': typeof AdminAsetRoute
   '/admin/asn': typeof AdminAsnRoute
   '/admin/audit': typeof AdminAuditRoute
   '/admin/backup': typeof AdminBackupRoute
@@ -365,6 +374,7 @@ export interface FileRouteTypes {
     | '/kontak'
     | '/reset-password'
     | '/tentang'
+    | '/admin/aset'
     | '/admin/asn'
     | '/admin/audit'
     | '/admin/backup'
@@ -404,6 +414,7 @@ export interface FileRouteTypes {
     | '/kontak'
     | '/reset-password'
     | '/tentang'
+    | '/admin/aset'
     | '/admin/asn'
     | '/admin/audit'
     | '/admin/backup'
@@ -443,6 +454,7 @@ export interface FileRouteTypes {
     | '/kontak'
     | '/reset-password'
     | '/tentang'
+    | '/admin/aset'
     | '/admin/asn'
     | '/admin/audit'
     | '/admin/backup'
@@ -483,6 +495,7 @@ export interface RootRouteChildren {
   KontakRoute: typeof KontakRoute
   ResetPasswordRoute: typeof ResetPasswordRoute
   TentangRoute: typeof TentangRoute
+  AdminAsetRoute: typeof AdminAsetRoute
   AdminAsnRoute: typeof AdminAsnRoute
   AdminAuditRoute: typeof AdminAuditRoute
   AdminBackupRoute: typeof AdminBackupRoute
@@ -753,6 +766,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminAsnRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/admin/aset': {
+      id: '/admin/aset'
+      path: '/admin/aset'
+      fullPath: '/admin/aset'
+      preLoaderRoute: typeof AdminAsetRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/asn/scan/$token': {
       id: '/asn/scan/$token'
       path: '/asn/scan/$token'
@@ -787,6 +807,7 @@ const rootRouteChildren: RootRouteChildren = {
   KontakRoute: KontakRoute,
   ResetPasswordRoute: ResetPasswordRoute,
   TentangRoute: TentangRoute,
+  AdminAsetRoute: AdminAsetRoute,
   AdminAsnRoute: AdminAsnRoute,
   AdminAuditRoute: AdminAuditRoute,
   AdminBackupRoute: AdminBackupRoute,
