@@ -292,6 +292,7 @@ export const listPendingStaff = createServerFn({ method: "POST" })
     const ids = (roleRows ?? []).map((r) => r.user_id as string);
     if (ids.length === 0) return { rows: [] };
     const roleMap = new Map((roleRows ?? []).map((r) => [r.user_id as string, r.role as "admin_opd" | "admin_desa" | "asn"]));
+    await ensureProfilesForUsers(ids);
 
     const [{ data: profs }, { data: list }, { data: opds }] = await Promise.all([
       supabaseAdmin.from("profiles").select("id,nama_lengkap,desa,opd_id,nip,jabatan,verified_at,created_at").in("id", ids),
