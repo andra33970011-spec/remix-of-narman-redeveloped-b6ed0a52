@@ -103,6 +103,7 @@ export const setUserRole = createServerFn({ method: "POST" })
     await assertSuperAdmin(userId);
     const rl = await checkRateLimit(userId, "set_role", 30, 60);
     if (!rl.ok) throw new Error("Too many requests, try again later");
+    await ensureProfileForUser(data.user_id);
 
     await supabaseAdmin.from("user_roles").delete().eq("user_id", data.user_id);
     const { error: insErr } = await supabaseAdmin
@@ -1080,6 +1081,7 @@ export const setUserVerified = createServerFn({ method: "POST" })
     await assertSuperAdmin(userId);
     const rl = await checkRateLimit(userId, "verify_staff", 60, 60);
     if (!rl.ok) throw new Error("Too many requests");
+    await ensureProfileForUser(data.user_id);
 
     const patch = data.verified
       ? { verified_at: new Date().toISOString(), verified_by: userId }
