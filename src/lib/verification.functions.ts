@@ -16,6 +16,40 @@ async function getDesa(userId: string): Promise<string | null> {
   return (data?.desa as string | null) ?? null;
 }
 
+async function ensureProfilesForUsers(userIds: string[]) {
+  if (userIds.length === 0) return;
+  const { data: existing, error } = await supabaseAdmin
+    .from("profiles")
+    .select("id")
+    .in("id", userIds);
+  if (error) throw new Error(error.message);
+  const existingIds = new Set((existing ?? []).map((p) => p.id as string));
+  const missingIds = userIds.filter((id) => !existingIds.has(id));
+  if (missingIds.length === 0) return;
+
+  const rows = await Promise.all(missingIds.map(async (id) => {
+    const { data: authUser, error: authError } = await supabaseAdmin.auth.admin.getUserById(id);
+    if (authError || !authUser.user) return null;
+    const meta = (authUser.user.user_metadata ?? {}) as Record<string, unknown>;
+    const username = typeof meta.username === "string" && meta.username.trim()
+      ? meta.username.trim().toLowerCase()
+      : (authUser.user.email ?? "").split("@")[0] || null;
+    return {
+      id,
+      username,
+      nama_lengkap: typeof meta.nama_lengkap === "string" && meta.nama_lengkap.trim() ? meta.nama_lengkap.trim() : username ?? "",
+      no_hp: typeof meta.no_hp === "string" ? meta.no_hp : null,
+      nik: typeof meta.nik === "string" ? meta.nik : null,
+      desa: typeof meta.desa === "string" ? meta.desa : null,
+    };
+  }));
+  const payload = rows.filter((row): row is NonNullable<typeof row> => row !== null);
+  if (payload.length > 0) {
+    const { error: upsertError } = await supabaseAdmin.from("profiles").upsert(payload, { onConflict: "id" });
+    if (upsertError) throw new Error(upsertError.message);
+  }
+}
+
 // ---- Konfigurasi Verifikasi Desa (super admin) ----
 type VerifConfig = {
   enabled: boolean;
@@ -258,6 +292,7 @@ export const listPendingStaff = createServerFn({ method: "POST" })
     const ids = (roleRows ?? []).map((r) => r.user_id as string);
     if (ids.length === 0) return { rows: [] };
     const roleMap = new Map((roleRows ?? []).map((r) => [r.user_id as string, r.role as "admin_opd" | "admin_desa" | "asn"]));
+    await ensureProfilesForUsers(ids);
 
     const [{ data: profs }, { data: list }, { data: opds }] = await Promise.all([
       supabaseAdmin.from("profiles").select("id,nama_lengkap,desa,opd_id,nip,jabatan,verified_at,created_at").in("id", ids),

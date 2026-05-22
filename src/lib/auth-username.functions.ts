@@ -75,8 +75,10 @@ export const signupWithUsername = createServerFn({ method: "POST" })
     if (error) throw new Error(error.message);
     const userId = created.user!.id;
 
-    // Update profile: set username + field role-specific. Trigger handle_new_user akan membuat profile dasar.
+    // Upsert profile: jangan bergantung pada trigger auth.users karena bisa tidak aktif
+    // di lingkungan hosted; tanpa baris profiles, verifikasi/manajemen user kosong.
     const profileUpdate: {
+      id: string;
       username: string;
       nama_lengkap: string;
       no_hp: string | null;
@@ -86,6 +88,7 @@ export const signupWithUsername = createServerFn({ method: "POST" })
       nip?: string | null;
       jabatan?: string | null;
     } = {
+      id: userId,
       username: u,
       nama_lengkap: data.nama_lengkap,
       no_hp: data.no_hp ?? null,
@@ -101,12 +104,16 @@ export const signupWithUsername = createServerFn({ method: "POST" })
       profileUpdate.nip = data.nip ?? null;
       profileUpdate.jabatan = data.jabatan ?? null;
     }
-    await supabaseAdmin.from("profiles").update(profileUpdate).eq("id", userId);
+    const { error: profileErr } = await supabaseAdmin
+      .from("profiles")
+      .upsert(profileUpdate, { onConflict: "id" });
+    if (profileErr) throw new Error(profileErr.message);
 
     // Untuk staf (non-warga), set role tanpa verified_at. Trigger super_admin protection tetap aktif.
     if (data.requested_role !== "warga") {
       await supabaseAdmin.from("user_roles").delete().eq("user_id", userId);
-      await supabaseAdmin.from("user_roles").insert({ user_id: userId, role: data.requested_role });
+      const { error: roleErr } = await supabaseAdmin.from("user_roles").insert({ user_id: userId, role: data.requested_role });
+      if (roleErr) throw new Error(roleErr.message);
     }
 
     await supabaseAdmin.from("audit_log").insert({
