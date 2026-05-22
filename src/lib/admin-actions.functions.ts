@@ -21,6 +21,38 @@ async function assertSuperAdmin(userId: string) {
   if (!data) throw new Error("Forbidden: super admin only");
 }
 
+async function ensureProfileForUser(userId: string) {
+  const { data: existing, error: existingError } = await supabaseAdmin
+    .from("profiles")
+    .select("id")
+    .eq("id", userId)
+    .maybeSingle();
+  if (existingError) throw new Error(existingError.message);
+  if (existing) return;
+
+  const { data: authUser, error: authError } = await supabaseAdmin.auth.admin.getUserById(userId);
+  if (authError) throw new Error(authError.message);
+  const user = authUser.user;
+  if (!user) throw new Error("User auth tidak ditemukan");
+
+  const meta = (user.user_metadata ?? {}) as Record<string, unknown>;
+  const username = typeof meta.username === "string" && meta.username.trim()
+    ? meta.username.trim().toLowerCase()
+    : (user.email ?? "").split("@")[0] || null;
+  const nama = typeof meta.nama_lengkap === "string" && meta.nama_lengkap.trim()
+    ? meta.nama_lengkap.trim()
+    : username ?? "";
+  const { error: insertError } = await supabaseAdmin.from("profiles").upsert({
+    id: userId,
+    username,
+    nama_lengkap: nama,
+    no_hp: typeof meta.no_hp === "string" ? meta.no_hp : null,
+    nik: typeof meta.nik === "string" ? meta.nik : null,
+    desa: typeof meta.desa === "string" ? meta.desa : null,
+  }, { onConflict: "id" });
+  if (insertError) throw new Error(insertError.message);
+}
+
 // Returns: { isSuper: boolean, opdId: string | null }
 async function assertAdminOrSuper(userId: string) {
   const { data: roles } = await supabaseAdmin
